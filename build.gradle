@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id "io.freefair.lombok" version "6.6.3"
+}
+
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+def aspectJVersion = "1.9.20.1"
+def allureVersion = "2.24.0"
+
+configurations {
+    agent {
+        canBeResolved = true
+        canBeConsumed = true
+    }
+}
+
+dependencies {
+    implementation group: 'org.json', name: 'json', version: '20220924'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.16.0'
+    implementation group: 'org.testng', name: 'testng', version: '7.7.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    implementation group: 'io.rest-assured', name: 'rest-assured', version: '5.3.0'
+    implementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+    implementation group: 'org.aeonbits.owner', name: 'owner', version: '1.0.12'
+    implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.4.14'
+    implementation group: 'ch.qos.logback', name: 'logback-core', version: '1.4.14'
+    agent "org.aspectj:aspectjweaver:$aspectJVersion"
+    implementation platform("io.qameta.allure:allure-bom:$allureVersion")
+    implementation "io.qameta.allure:allure-testng"
+}
+
+test {
+    jvmArgs = [ "-javaagent:${configurations.agent.singleFile}" ]
+}
+test {
+    useTestNG()
+    testLogging {
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+    test.outputs.upToDateWhen { false }
+}
