@@ -13,11 +13,12 @@ import java.util.HashMap;
 
 public class PlayerApiService extends ApiService {
     public ArrayList<Integer> playerIdsToBeDeleted = new ArrayList<>();
+    private String basePath = "/player";
 
     @Step("Create new player")
     public AssertableResponse createNewPlayer(HashMap createNewPlayerQueryParameters, String editor) {
         Response response = setup()
-                .basePath("/player")
+                .basePath(basePath)
                 .queryParams(createNewPlayerQueryParameters)
                 .pathParam("editor", editor)
                 .when().get("/create/{editor}");
@@ -29,7 +30,7 @@ public class PlayerApiService extends ApiService {
     public AssertableResponse getAllPlayers() {
 
         return new AssertableResponse(setup()
-                .basePath("/player")
+                .basePath(basePath)
                 .when().get("/get/all"));
     }
 
@@ -37,7 +38,7 @@ public class PlayerApiService extends ApiService {
     public AssertableResponse getPlayerById(GetPlayerByIdPayload id) {
 
         return new AssertableResponse(setup()
-                .basePath("/player")
+                .basePath(basePath)
                 .body(id)
                 .post("/get"));
     }
@@ -46,7 +47,7 @@ public class PlayerApiService extends ApiService {
     public AssertableResponse deletePlayer(DeletePlayerByIdPayload id) {
 
         return new AssertableResponse(setup()
-                .basePath("/player")
+                .basePath(basePath)
                 .pathParam("editor", "supervisor")
                 .body(id)
                 .delete("/delete/{editor}"));
