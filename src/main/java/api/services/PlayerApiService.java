@@ -4,6 +4,7 @@ import api.assertions.AssertableResponse;
 import api.dto.CreatePlayerResponse;
 import api.payloads.DeletePlayerByIdPayload;
 import api.payloads.GetPlayerByIdPayload;
+import api.payloads.PatchPlayerByIdPayload;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
@@ -13,10 +14,10 @@ import java.util.HashMap;
 
 public class PlayerApiService extends ApiService {
     public ArrayList<Integer> playerIdsToBeDeleted = new ArrayList<>();
-    private String basePath = "/player";
+    private final String basePath = "/player";
 
     @Step("Create new player")
-    public AssertableResponse createNewPlayer(HashMap createNewPlayerQueryParameters, String editor) {
+    public AssertableResponse createNewPlayer(HashMap<String, Object> createNewPlayerQueryParameters, String editor) {
         Response response = setup()
                 .basePath(basePath)
                 .queryParams(createNewPlayerQueryParameters)
@@ -51,6 +52,16 @@ public class PlayerApiService extends ApiService {
                 .pathParam("editor", "supervisor")
                 .body(id)
                 .delete("/delete/{editor}"));
+    }
+
+    @Step("Patch player by id")
+    public AssertableResponse patchPlayer(String editor, int id, PatchPlayerByIdPayload payload) {
+        return new AssertableResponse(setup()
+                .basePath(basePath)
+                .pathParam("editor", editor)
+                .pathParam("id", id)
+                .body(payload)
+                .when().patch("/update/{editor}/{id}"));
     }
 
     private void putUserIntoDeletionQueue(int id) {
